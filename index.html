@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Bar</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background-color: #f0f2f5; 
+        }
+        
+        /* Sidebar styling */
+        .sidebar { 
+            width: 320px; 
+            background: #ffffff; 
+            height: 100vh; 
+            overflow-y: auto; 
+            border-right: 1px solid #eaeaea; 
+            padding: 20px 10px; 
+            box-sizing: border-box;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #dcdcdc; 
+            border-radius: 10px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #b0b0b0; 
+        }
+
+        /* Menu Lists */
+        .menu-list { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        .sub-menu {
+            list-style: none; 
+            margin: 0 0 0 24px;
+            padding: 4px 0 4px 12px;
+            border-left: 2px solid #f0f0f0;
+        }
+
+        /* Menu Items */
+        .menu-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 14px;
+            margin-bottom: 2px;
+            border-radius: 8px;
+            text-decoration: none; 
+            color: #4a4a4a; 
+            cursor: pointer; 
+            user-select: none;
+            font-size: 14.5px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .menu-item:hover { 
+            background-color: #f4f6fb; 
+            color: #1a1a1a;
+            transform: translateX(2px);
+        }
+
+        /* Active highlight for main categories (e.g. Flash Sales) */
+        .menu-item.active-bg { 
+            background-color: #f2eefa; 
+            color: #7b1fa2;
+            font-weight: 600;
+        }
+
+        /* Text colors */
+        .active-text { 
+            color: #7b1fa2; 
+            font-weight: 600; 
+        }
+
+        /* Icons */
+        .icon { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px; 
+            height: 28px;
+            margin-right: 12px; 
+            font-size: 16px;
+            border-radius: 6px;
+            background-color: #f7f9fa;
+        }
+        .icon.green { color: #2e7d32; background-color: #e8f5e9; }
+        .icon.blue { color: #1976d2; background-color: #e3f2fd; }
+        .icon.red { color: #d32f2f; background-color: #ffebee; }
+        .icon.orange { color: #f57c00; background-color: #fff3e0; }
+        .icon.purple { color: #7b1fa2; background-color: #f3e5f5; }
+        .icon.teal { color: #00796b; background-color: #e0f2f1; }
+        .icon.gray { color: #616161; background-color: #f5f5f5; }
+
+        /* Accordion resets */
+        details > summary { list-style: none; outline: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        /* Native chevron for HTML details */
+        .chevron { 
+            font-size: 12px; 
+            color: #999; 
+            transition: transform 0.3s ease; 
+        }
+        details[open] > summary .chevron { 
+            transform: rotate(90deg); 
+            color: #666;
+        }
+        
+        .sub-menu .menu-item {
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+        }
+        
+        .sub-menu .menu-item:hover {
+            color: #333;
+            background-color: transparent;
+            transform: translateX(4px);
+        }
+        
+        .sub-menu .menu-item.active-text:hover {
+            color: #7b1fa2;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #f0f0f0;
+            margin: 12px 15px;
+        }
+        
+        .menu-list > li > a > span {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <!-- Top Section with Icons -->
+        <ul class="menu-list">
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon green">🎫</span> Coupons</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon blue">🏷️</span> Offers</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon red">❤️</span> Favourites</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon orange">📊</span> Inventory Platform</span></a></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <!-- Middle Section -->
+        <ul class="menu-list">
+            <li><a class="menu-item">Popular</a></li>
+            <li><a class="menu-item active-bg">Flash Sales</a></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <!-- Accordion Section -->
+        <ul class="menu-list">
+            <!-- Main category Food -->
+            <li>
+                <details open>
+                    <summary class="menu-item">
+                        Food 
+                        <span class="chevron">❯</span>
+                    </summary>
+                    <div class="sub-menu">
+                        <!-- Fruits & Vegetables -->
+                        <details>
+                            <summary class="menu-item">Fruits & Vegetables <span class="chevron">❯</span></summary>
+                            <div class="sub-menu"></div>
+                        </details>
+                        
+                        <!-- Meat & Fish -->
+                        <details>
+                            <summary class="menu-item">Meat & Fish <span class="chevron">❯</span></summary>
+                            <div class="sub-menu"></div>
+                        </details>
+
+                        <!-- Cooking -->
+                        <details>
+                            <summary class="menu-item">Cooking <span class="chevron">❯</span></summary>
+                            <div class="sub-menu"></div>
+                        </details>
+
+                        <!-- Sauces & Pickles -->
+                        <details open>
+                            <summary class="menu-item">Sauces & Pickles <span class="chevron">❯</span></summary>
+                            <div class="sub-menu">
+                                <a class="menu-item">Tomato Sauces</a>
+                                <a class="menu-item active-text">Pickles</a>
+                                <a class="menu-item">Cooking Sauces</a>
+                                <a class="menu-item">Other Table Sauces</a>
+                            </div>
+                        </details>
+                        
+                        <details><summary class="menu-item">Dairy & Eggs <span class="chevron">❯</span></summary><div class="sub-menu"></div></details>
+                        <details>
+                            <summary class="menu-item">Breakfast <span class="chevron">❯</span></summary>
+                            <div class="sub-menu">
+                                <a class="menu-item">Eggs</a>
+                                <a class="menu-item">Breads</a>
+                                <a class="menu-item">Tea & Coffee</a>
+                                <a class="menu-item">Local Breakfast</a>
+                                <a class="menu-item">Cereals</a>
+                                <a class="menu-item">Honey</a>
+                                <a class="menu-item">Dips, Spreads & Syrups</a>
+                                <a class="menu-item">Energy Boosters</a>
+                                <a class="menu-item">Jams & Jellies</a>
+                            </div>
+                        </details>
+                        <details>
+                            <summary class="menu-item">Candy & Chocolate <span class="chevron">❯</span></summary>
+                            <div class="sub-menu">
+                                <a class="menu-item">Chocolates</a>
+                                <a class="menu-item">Wafers</a>
+                                <a class="menu-item">Candies</a>
+                                <a class="menu-item">Gums, Mints & Mouth Fresheners</a>
+                                <a class="menu-item">Jellies & Marshmallows</a>
+                            </div>
+                        </details>
+                        <details>
+                            <summary class="menu-item">Snacks <span class="chevron">❯</span></summary>
+                            <div class="sub-menu">
+                                <a class="menu-item">Noodles</a>
+                                <a class="menu-item">Cookies</a>
+                                <a class="menu-item">Local Snacks</a>
+                                <a class="menu-item">Chips & Pretzels</a>
+                                <a class="menu-item">Plain Biscuits</a>
+                                <a class="menu-item">Toast & Bakery Biscuits</a>
+                                <a class="menu-item">Cream Biscuits</a>
+                                <a class="menu-item">Pasta & Macaroni</a>
+                                <a class="menu-item">Soups</a>
+                                <a class="menu-item">Popcorn & Nuts</a>
+                                <a class="menu-item">Salted Biscuits</a>
+                                <a class="menu-item">Cakes</a>
+                                <a class="menu-item">Salad Dressing</a>
+                            </div>
+                        </details>
+                        <details><summary class="menu-item">Beverages <span class="chevron">❯</span></summary><div class="sub-menu"></div></details>
+                        <details><summary class="menu-item">Baking <span class="chevron">❯</span></summary><div class="sub-menu"></div></details>
+                        <details><summary class="menu-item">Frozen & Canned <span class="chevron">❯</span></summary><div class="sub-menu"></div></details>
+                        <a class="menu-item">Diabetic Food</a>
+                        <a class="menu-item">Ice Cream</a>
+                    </div>
+                </details>
+            </li>
+
+            <!-- Other Main Categories -->
+            <li>
+                <details>
+                    <summary class="menu-item">Cleaning Supplies <span class="chevron">❯</span></summary>
+                    <div class="sub-menu">
+                        <a class="menu-item">Dishwashing Supplies</a>
+                        <a class="menu-item">Laundry</a>
+                        <a class="menu-item">Toilet Cleaners</a>
+                        <a class="menu-item">Napkins & Paper Products</a>
+                        <a class="menu-item">Pest Control</a>
+                        <a class="menu-item">Floor & Glass Cleaners</a>
+                        <a class="menu-item">Cleaning Accessories</a>
+                        <a class="menu-item">Air Fresheners</a>
+                        <a class="menu-item">Disposables & Trash Bags</a>
+                        <a class="menu-item">Shoe Care</a>
+                        <a class="menu-item">Trash Bin & Basket</a>
+                    </div>
+                </details>
+            </li>
+            <li>
+                <details>
+                    <summary class="menu-item">Home & Kitchen <span class="chevron">❯</span></summary>
+                    <div class="sub-menu">
+                        <a class="menu-item">Kitchen Accessories</a>
+                        <a class="menu-item">Kitchen Appliances</a>
+                        <a class="menu-item">Lights & Electrical</a>
+                        <a class="menu-item">Tools & Hardware</a>
+                        <a class="menu-item">Basket & Bucket</a>
+                        <a class="menu-item">Box & Container</a>
+                        <a class="menu-item">Gardening</a>
+                        <a class="menu-item">Rack & Organizer</a>
+                        <a class="menu-item">Disposables</a>
+                    </div>
+                </details>
+            </li>
+            <li><details><summary class="menu-item">Fashion & Lifestyle <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Baby Care <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Personal Care <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Stationery & Office <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Pet Care <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Toys & Sports <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><a class="menu-item">Beauty & MakeUp</a></li>
+            <li><details><summary class="menu-item">Health & Wellness <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+            <li><details><summary class="menu-item">Vehicle Essentials <span class="chevron">❯</span></summary><div class="sub-menu"></div></details></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <!-- Bottom Links -->
+        <ul class="menu-list">
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon purple">✨</span> New Arrival</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon teal">🛡️</span> Safety Center</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon orange">👑</span> Premium Care</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon blue">💬</span> Help</span></a></li>
+            <li><a class="menu-item"><span style="display: flex; align-items: center;"><span class="icon gray">📝</span> File a complaint</span></a></li>
+        </ul>
+    </nav>
+
+</body>
+</html>
