@@ -2,7 +2,7 @@ import time
 
 class AIModelsDevelopment:
     def execute(self):
-        print("\n--- 7. AI Model Development ---")
+        print("\n---7. AI Model Development ---")
         print("[*] Building Load forecasting model (LSTM/ANN)...")
         print("[*] Building Renewable prediction model...")
         print("[*] Building Battery optimization model...")
