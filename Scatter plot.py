@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy  as np
 
 
 degree = [1, 2, 2, 2, 3, 10, 11, 12, 15, 17, 25]
