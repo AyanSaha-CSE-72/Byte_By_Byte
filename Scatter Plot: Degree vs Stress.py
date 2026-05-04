@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+ import matplotlib.pyplot as plt
 
 degree = [1, 2, 2, 2, 3, 10, 11, 12, 15, 17, 25]
 stress = [0, 1400, 1800, 3700, 4500, 1700, 2900, 2050, 4050, 2900, 7700]
