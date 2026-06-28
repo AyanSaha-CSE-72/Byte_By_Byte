@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSE-3202: Numerical Methods — CT 1 &amp; CT 2 Answer Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+
+    :root {
+      --bg:            #F2F7EE;
+      --sidebar-bg:    #2D5A27;
+      --accent:        #D4ED8A;
+      --banner-bg:     #E8F4E0;
+      --banner-border: #B6D49A;
+      --card-border:   #C8E0BA;
+      --q-color:       #1A6B14;
+      --q-stripe:      #F0C040;
+      --a-color:       #4A6A44;
+      --by-bg:         #FEF0C0;
+      --by-txt:        #8B6800;
+      --br-bg:         #FDECEA;
+      --br-txt:        #9B1C1C;
+      --bg-step:       #F6FBF2;
+      --step-border:   #C8E0BA;
+      --formula-bg:    #FFFDE8;
+      --formula-bdr:   #E8D570;
+      --note-bg:       #FEF0C0;
+      --note-bdr:      #F0C040;
+      --result-bg:     #D4ED8A;
+      --result-txt:    #1A4A10;
+      --font:          'Outfit', sans-serif;
+      --mono:          'JetBrains Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); font-family: var(--font); color: #1A2E14; display: flex; min-height: 100vh; overflow-x: hidden; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 272px; min-height: 100vh; position: fixed; left: 0; top: 0;
+      background: var(--sidebar-bg); display: flex; flex-direction: column;
+      padding: 28px 20px; z-index: 100; overflow-y: auto;
+    }
+    .sb-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .sb-icon { width: 36px; height: 36px; background: rgba(212,237,138,0.15); border-radius: 8px;
+      display: grid; place-items: center; flex-shrink: 0; }
+    .sb-icon svg { width: 18px; height: 18px; }
+    .sb-title { color: var(--accent); font-size: 1rem; font-weight: 700; line-height: 1.25; }
+    .sb-sub { color: rgba(212,237,138,0.5); font-size: 0.72rem; margin-bottom: 6px; padding-left: 46px; }
+    .sb-section-lbl { color: rgba(212,237,138,0.4); font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 8px; }
+    .nav-links { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .nav-links a {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(212,237,138,0.6); text-decoration: none;
+      padding: 9px 12px; border-radius: 8px; font-size: 0.88rem; font-weight: 500;
+      transition: all 0.18s; border-left: 3px solid transparent;
+    }
+    .nav-links a .nav-num { font-size: 0.7rem; background: rgba(212,237,138,0.12);
+      border-radius: 4px; padding: 1px 6px; flex-shrink: 0; }
+    .nav-links a:hover { color: var(--accent); background: rgba(212,237,138,0.08); }
+    .nav-links a.active { color: var(--accent); background: rgba(212,237,138,0.13);
+      border-left-color: var(--accent); }
+    .nav-links a.active .nav-num { background: rgba(212,237,138,0.22); }
+
+    /* ── Content ── */
+    .content-area { margin-left: 272px; flex: 1; padding: 36px 44px 60px; max-width: 980px; }
+
+    .header-banner {
+      background: var(--banner-bg); border: 1px solid var(--banner-border);
+      border-radius: 16px; padding: 28px 32px; margin-bottom: 36px;
+      box-shadow: 0 2px 14px rgba(45,90,39,0.09);
+    }
+    .header-banner h1 { color: #2D5A27; font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
+    .header-banner .dept { color: #5A8A50; font-size: 0.9rem; margin-bottom: 14px; }
+    .meta-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { display: inline-block; border-radius: 20px; font-size: 0.75rem; font-weight: 600; padding: 4px 14px; }
+    .chip-g { background: #D8F0D0; color: #1A6B14; }
+    .chip-y { background: var(--by-bg); color: var(--by-txt); }
+    .chip-r { background: var(--br-bg); color: var(--br-txt); }
+
+    /* ── Sections ── */
+    .section-container { display: none; flex-direction: column; gap: 28px; }
+    .section-container.active { display: flex; animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Card ── */
+    .card {
+      background: #fff; border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 30px 34px;
+      box-shadow: 0 2px 18px rgba(45,90,39,0.07);
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #90C080; }
+
+    .qblock { margin-bottom: 28px; }
+    .qblock:last-child { margin-bottom: 0; }
+
+    .q-strip {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: #F5FBF1; border-left: 4px solid var(--q-stripe);
+      border-radius: 0 10px 10px 0; padding: 13px 16px; margin-bottom: 16px;
+    }
+    .q-tag { color: var(--by-txt); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; margin-top: 2px; }
+    .q-body { color: var(--q-color); font-size: 0.96rem; font-weight: 600; line-height: 1.55; flex: 1; }
+    .marks { margin-left: auto; background: var(--by-bg); color: var(--by-txt);
+      border-radius: 6px; font-size: 0.73rem; font-weight: 700;
+      padding: 3px 10px; white-space: nowrap; flex-shrink: 0; }
+
+    .ans-tag { color: #3A7A30; font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .ans-body { color: var(--a-color); font-size: 0.94rem; line-height: 1.8; }
+    .ans-body p { margin-bottom: 10px; }
+    .ans-body p:last-child { margin-bottom: 0; }
+    .ans-body ul, .ans-body ol { padding-left: 22px; margin-bottom: 10px; }
+    .ans-body li { margin-bottom: 6px; }
+    .ans-body strong { color: #2D5A27; font-weight: 600; }
+
+    .step {
+      background: var(--bg-step); border: 1px solid var(--step-border);
+      border-radius: 10px; padding: 14px 18px; margin: 12px 0;
+    }
+    .step-title { color: #2D5A27; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 9px; }
+
+    .fbox {
+      background: var(--formula-bg); border: 1px solid var(--formula-bdr);
+      border-radius: 10px; padding: 14px 20px; margin: 12px 0; text-align: center;
+    }
+
+    .result {
+      background: var(--result-bg); color: var(--result-txt); font-weight: 700;
+      border-radius: 8px; padding: 11px 18px; margin-top: 14px;
+      font-size: 0.94rem; border-left: 4px solid #2D5A27; line-height: 1.5;
+    }
+
+    .note {
+      background: var(--note-bg); border-left: 4px solid var(--note-bdr);
+      border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 10px 0;
+      font-size: 0.86rem; color: #5A4400; line-height: 1.6;
+    }
+    .note strong { color: #7A5A00; }
+
+    hr.divider { border: none; border-top: 1px dashed #C8E0BA; margin: 24px 0; }
+
+    .table-wrap { overflow-x: auto; margin: 12px 0; border-radius: 8px; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.87rem; }
+    th { background: #DFF0D4; color: #2D5A27; font-weight: 600;
+      padding: 8px 12px; border: 1px solid #C8E0BA; text-align: center; }
+    td { padding: 7px 12px; border: 1px solid #C8E0BA;
+      text-align: center; color: var(--a-color); }
+    tr:nth-child(even) td { background: #F6FBF2; }
+
+    code { font-family: var(--mono); background: #EDF7E8; color: #1A6B14;
+      padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+    pre { font-family: var(--mono); background: #EDF7E8; color: #1A6B14;
+      padding: 14px 18px; border-radius: 10px; font-size: 0.84rem;
+      overflow-x: auto; margin: 10px 0; border: 1px solid #C8E0BA; line-height: 1.7; }
+
+    /* ── CT Toggle ── */
+    .year-toggle {
+      display: flex; background: rgba(0,0,0,0.25); border-radius: 24px;
+      padding: 4px; margin-bottom: 22px; gap: 2px;
+    }
+    .year-btn {
+      flex: 1; text-align: center; padding: 7px 0;
+      border-radius: 20px; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; border: none; background: transparent;
+      color: rgba(212,237,138,0.5); transition: all 0.2s; letter-spacing: 0.04em;
+      font-family: var(--font);
+    }
+    .year-btn.active {
+      background: var(--accent); color: #2D5A27;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .year-btn:hover:not(.active) { color: var(--accent); }
+    /* ── CT Panels ── */
+    .year-panel { display: none; }
+    .year-panel.active { display: block; }
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#D4ED8A" stroke-width="1.8" stroke-linecap="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        <line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/>
+      </svg>
+    </div>
+    <div class="sb-title">CSE-3202<br>Numerical Methods</div>
+  </div>
+  <div class="sb-sub">Saic Institute of Mgmt &amp; Tech</div>
+
+  <!-- CT Toggle -->
+  <div class="year-toggle">
+    <button class="year-btn active" id="btn-CT1" onclick="switchYear('CT1')">📝 CT 1</button>
+    <button class="year-btn" id="btn-CT2" onclick="switchYear('CT2')">📝 CT 2</button>
+  </div>
+
+  <div class="sb-section-lbl">Questions</div>
+
+  <ul class="nav-links" id="nav-CT1">
+    <li><a href="#" onclick="show('CT1','q1',this);return false;" class="active"><span class="nav-num">01</span> Gauss Elimination</a></li>
+    <li><a href="#" onclick="show('CT1','q2',this);return false;"><span class="nav-num">02</span> Gauss-Jordan</a></li>
+    <li><a href="#" onclick="show('CT1','q3',this);return false;"><span class="nav-num">03</span> Fixed Point Iter.</a></li>
+    <li><a href="#" onclick="show('CT1','q4',this);return false;"><span class="nav-num">04</span> Modified Euler</a></li>
+  </ul>
+
+  <ul class="nav-links" id="nav-CT2" style="display:none;">
+    <li><a href="#" onclick="show('CT2','q1',this);return false;" class="active"><span class="nav-num">01</span> Gauss-Seidel</a></li>
+    <li><a href="#" onclick="show('CT2','q2',this);return false;"><span class="nav-num">02</span> Cramer's Rule</a></li>
+    <li><a href="#" onclick="show('CT2','q3',this);return false;"><span class="nav-num">03</span> Taylor's Series</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="content-area">
+
+<!-- ════════════════ CT1 PANEL ════════════════ -->
+<div class="year-panel active" id="panel-CT1">
+  <div class="header-banner">
+    <h1>Numerical Methods — Class Test 1</h1>
+    <div class="dept">CSE-3202 &nbsp;·&nbsp; Saic Institute of Management &amp; Technology</div>
+    <div class="meta-row">
+      <span class="chip chip-g">Class Test 1</span>
+      <span class="chip chip-y">4 Questions</span>
+      <span class="chip chip-r">Linear Systems &amp; ODEs</span>
+    </div>
+  </div>
+
+  <!-- CT1 Q1 -->
+  <div class="section-container active" id="CT1-q1">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 1</span>
+          <span class="q-body">Solve the following system using the Gauss Elimination method:<br>2x + y − 3z = 11, &nbsp; 4x − 2y + 3z = 8, &nbsp; −2x + 2y − z = −6</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>Write the augmented matrix $[A|b]$:</p>
+          <div class="fbox">
+            $$\left[\begin{array}{ccc|c} 2 & 1 & -3 & 11 \\ 4 & -2 & 3 & 8 \\ -2 & 2 & -1 & -6 \end{array}\right]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 1 — Eliminate x from R₂ and R₃</div>
+            $R_2 \leftarrow R_2 - 2R_1$:
+            $$\left[\begin{array}{ccc|c} 2 & 1 & -3 & 11 \\ 0 & -4 & 9 & -14 \\ -2 & 2 & -1 & -6 \end{array}\right]$$
+            $R_3 \leftarrow R_3 + R_1$:
+            $$\left[\begin{array}{ccc|c} 2 & 1 & -3 & 11 \\ 0 & -4 & 9 & -14 \\ 0 & 3 & -4 & 5 \end{array}\right]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 2 — Eliminate y from R₃</div>
+            $R_3 \leftarrow R_3 + \dfrac{3}{4}R_2$:
+            <br><br>
+            New $R_3$: $\left[0,\ 0,\ -4+\dfrac{3}{4}(9)\ \bigg|\ 5+\dfrac{3}{4}(-14)\right] = \left[0,\ 0,\ \dfrac{11}{4}\ \bigg|\ -\dfrac{11}{2}\right]$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 3 — Back Substitution</div>
+            From $R_3$: $\dfrac{11}{4}z = -\dfrac{11}{2}$ &nbsp;→&nbsp; $\boxed{z = -2}$<br><br>
+            From $R_2$: $-4y + 9(-2) = -14$ &nbsp;→&nbsp; $-4y = 4$ &nbsp;→&nbsp; $\boxed{y = -1}$<br><br>
+            From $R_1$: $2x + (-1) - 3(-2) = 11$ &nbsp;→&nbsp; $2x + 5 = 11$ &nbsp;→&nbsp; $\boxed{x = 3}$
+          </div>
+
+          <div class="result">∴ x = 3, &nbsp; y = −1, &nbsp; z = −2</div>
+          <div class="note"><strong>Verification:</strong> $2(3)+(-1)-3(-2)=11$ ✓, &nbsp; $4(3)-2(-1)+3(-2)=8$ ✓, &nbsp; $-2(3)+2(-1)-(-2)=-6$ ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CT1 Q2 -->
+  <div class="section-container" id="CT1-q2">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 2</span>
+          <span class="q-body">Solve the following system using the Gauss-Jordan method:<br>6x + 15y + 2z = 72, &nbsp; x + y + 54z = 110, &nbsp; 27x + 6y − z = 85</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>For a convenient pivot, swap $R_1$ and $R_2$ first, then write the augmented matrix:</p>
+          <div class="fbox">
+            $$\left[\begin{array}{ccc|c} 1 & 1 & 54 & 110 \\ 6 & 15 & 2 & 72 \\ 27 & 6 & -1 & 85 \end{array}\right]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 1 — Eliminate x from R₂ and R₃</div>
+            $R_2 \leftarrow R_2 - 6R_1$, &nbsp; $R_3 \leftarrow R_3 - 27R_1$:
+            $$\left[\begin{array}{ccc|c} 1 & 1 & 54 & 110 \\ 0 & 9 & -322 & -588 \\ 0 & -21 & -1459 & -2885 \end{array}\right]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 2 — Normalize R₂, then eliminate y from R₁ and R₃</div>
+            $R_2 \leftarrow R_2 / 9$:
+            $$\left[\begin{array}{ccc|c} 1 & 1 & 54 & 110 \\ 0 & 1 & -35.7778 & -65.3333 \\ 0 & -21 & -1459 & -2885 \end{array}\right]$$
+            $R_1 \leftarrow R_1 - R_2$, &nbsp; $R_3 \leftarrow R_3 + 21R_2$:
+            $$\left[\begin{array}{ccc|c} 1 & 0 & 89.7778 & 175.3333 \\ 0 & 1 & -35.7778 & -65.3333 \\ 0 & 0 & -2210.333 & -4257 \end{array}\right]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 3 — Normalize R₃, then eliminate z from R₁ and R₂</div>
+            $R_3 \leftarrow R_3 / (-2210.333)$ &nbsp;→&nbsp; $z$-row becomes $\left[0,\ 0,\ 1\ \big|\ 1.9260\right]$<br><br>
+            Back-substituting into $R_1$ and $R_2$ gives the reduced identity matrix:
+            $$\left[\begin{array}{ccc|c} 1 & 0 & 0 & 2.4255 \\ 0 & 1 & 0 & 3.5730 \\ 0 & 0 & 1 & 1.9260 \end{array}\right]$$
+          </div>
+
+          <div class="result">∴ x ≈ 2.4255, &nbsp; y ≈ 3.5730, &nbsp; z ≈ 1.9260</div>
+          <div class="note"><strong>Verification:</strong> $6(2.4255)+15(3.5730)+2(1.9260) = 14.553+53.595+3.852 \approx 72.00$ ✓ (small rounding only)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CT1 Q3 -->
+  <div class="section-container" id="CT1-q3">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 3</span>
+          <span class="q-body">Find the real root of cos x = 3x − 1, correct to five decimal places, using the Fixed Point Iteration method.</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>Rearranging $\cos x = 3x - 1$ into the fixed-point form $x = g(x)$:</p>
+          <div class="fbox">$$g(x) = \dfrac{\cos x + 1}{3}$$</div>
+
+          <div class="step">
+            <div class="step-title">Convergence Check</div>
+            $g'(x) = -\dfrac{\sin x}{3}$, &nbsp; so $|g'(x)| \le \dfrac{1}{3} < 1$ for all $x$.<br>
+            The iteration scheme is guaranteed to converge.
+          </div>
+
+          <p><strong>Initial guess:</strong> $x_0 = 0.6$ (since the root clearly lies near $x=0.6$, where $\cos x \approx 0.825$ and $3x-1 \approx 0.8$)</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>i</th><th>$x_i$</th><th>$\cos x_i$</th><th>$x_{i+1} = (\cos x_i + 1)/3$</th></tr>
+              <tr><td>0</td><td>0.600000</td><td>0.825336</td><td>0.608445</td></tr>
+              <tr><td>1</td><td>0.608445</td><td>0.820537</td><td>0.606846</td></tr>
+              <tr><td>2</td><td>0.606846</td><td>0.821450</td><td>0.607150</td></tr>
+              <tr><td>3</td><td>0.607150</td><td>0.821276</td><td>0.607092</td></tr>
+              <tr><td>4</td><td>0.607092</td><td>0.821309</td><td>0.607103</td></tr>
+              <tr><td>5</td><td>0.607103</td><td>0.821303</td><td>0.607101</td></tr>
+              <tr><td>6</td><td>0.607101</td><td>0.821304</td><td>0.607102</td></tr>
+              <tr><td>7</td><td>0.607102</td><td>0.821304</td><td>0.607102</td></tr>
+            </table>
+          </div>
+
+          <div class="result">∴ Root ≈ 0.60710 (correct to 5 decimal places)</div>
+          <div class="note"><strong>Verification:</strong> $\cos(0.60710) = 0.82130$ and $3(0.60710)-1 = 0.82130$ ✓ — both sides agree.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CT1 Q4 -->
+  <div class="section-container" id="CT1-q4">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 4</span>
+          <span class="q-body">Find y(0.2) for y' = x − y², y(0) = 1, with step length h = 0.1, using the Modified Euler's method.</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>$f(x,y) = x - y^2$, &nbsp; $x_0 = 0$, &nbsp; $y_0 = 1$, &nbsp; $h = 0.1$.</p>
+          <div class="fbox">
+            $$\textbf{Predictor: } \bar{y}_{n+1} = y_n + h\,f(x_n,y_n) \qquad \textbf{Corrector: } y_{n+1} = y_n + \dfrac{h}{2}\Big[f(x_n,y_n) + f(x_{n+1},\bar{y}_{n+1})\Big]$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 1 — Find y(0.1)</div>
+            $f(x_0,y_0) = 0 - 1^2 = -1$<br>
+            Predictor: $\bar{y}_1 = 1 + 0.1(-1) = 0.9000$<br>
+            $f(x_1,\bar{y}_1) = 0.1 - (0.9)^2 = 0.1 - 0.81 = -0.71$<br>
+            Corrector: $y_1 = 1 + \dfrac{0.1}{2}\big[-1 + (-0.71)\big] = 1 - 0.0855 = 0.9145$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Step 2 — Find y(0.2)</div>
+            $f(x_1,y_1) = 0.1 - (0.9145)^2 = 0.1 - 0.836310 = -0.736310$<br>
+            Predictor: $\bar{y}_2 = 0.9145 + 0.1(-0.736310) = 0.840869$<br>
+            $f(x_2,\bar{y}_2) = 0.2 - (0.840869)^2 = 0.2 - 0.707061 = -0.507061$<br>
+            Corrector: $y_2 = 0.9145 + \dfrac{0.1}{2}\big[-0.736310 + (-0.507061)\big] = 0.9145 - 0.062169 = 0.852331$
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>n</th><th>$x_n$</th><th>$y_n$</th><th>$f(x_n,y_n)$</th><th>$\bar{y}_{n+1}$ (predictor)</th><th>$y_{n+1}$ (corrected)</th></tr>
+              <tr><td>0</td><td>0.0</td><td>1.0000</td><td>−1.0000</td><td>0.9000</td><td>0.9145</td></tr>
+              <tr><td>1</td><td>0.1</td><td>0.9145</td><td>−0.7363</td><td>0.8409</td><td>0.8523</td></tr>
+            </table>
+          </div>
+
+          <div class="result">∴ y(0.2) ≈ 0.8523</div>
+          <div class="note"><strong>Note:</strong> One corrector pass is applied per step here; iterating the corrector to convergence at each step refines this slightly to y(0.2) ≈ 0.8504, which would be the higher-accuracy answer if repeated correction is required.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════ CT2 PANEL ════════════════ -->
+<div class="year-panel" id="panel-CT2">
+  <div class="header-banner">
+    <h1>Numerical Methods — Class Test 2</h1>
+    <div class="dept">CSE-3202 &nbsp;·&nbsp; Saic Institute of Management &amp; Technology</div>
+    <div class="meta-row">
+      <span class="chip chip-g">Class Test 2</span>
+      <span class="chip chip-y">3 Questions</span>
+      <span class="chip chip-r">Iterative Methods &amp; Series</span>
+    </div>
+  </div>
+
+  <!-- CT2 Q1 -->
+  <div class="section-container active" id="CT2-q1">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 1</span>
+          <span class="q-body">Solve the following system of equations correct to 4 decimal places using the Gauss-Seidel Method:<br>2x + y − 2z = 17, &nbsp; 3x + 20y − z = −18, &nbsp; 2x − 3y + 20z = 25</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>Rearranging each equation for the diagonal variable:</p>
+          <div class="fbox">
+            $$x = \dfrac{17 - y + 2z}{2}, \qquad y = \dfrac{-18 - 3x + z}{20}, \qquad z = \dfrac{25 - 2x + 3y}{20}$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Initial Guess</div>
+            $x_0 = 0, \ y_0 = 0, \ z_0 = 0$ — values are updated immediately as each new estimate is found (Gauss-Seidel uses the latest value within the same iteration).
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>Iteration</th><th>x</th><th>y</th><th>z</th></tr>
+              <tr><td>1</td><td>8.5000</td><td>−2.1750</td><td>0.0738</td></tr>
+              <tr><td>2</td><td>9.6613</td><td>−2.3455</td><td>−0.0680</td></tr>
+              <tr><td>3</td><td>9.6048</td><td>−2.3441</td><td>−0.0621</td></tr>
+              <tr><td>4</td><td>9.6100</td><td>−2.3446</td><td>−0.0627</td></tr>
+              <tr><td>5</td><td>9.6096</td><td>−2.3446</td><td>−0.0626</td></tr>
+              <tr><td>6</td><td>9.6096</td><td>−2.3446</td><td>−0.0627</td></tr>
+            </table>
+          </div>
+          <p>Iterations 5 and 6 agree to 4 decimal places, so convergence is achieved.</p>
+
+          <div class="result">∴ x ≈ 9.6096, &nbsp; y ≈ −2.3446, &nbsp; z ≈ −0.0627</div>
+          <div class="note"><strong>Verification:</strong> $2(9.6096)+(-2.3446)-2(-0.0627) = 19.2192-2.3446+0.1254 = 17.000$ ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CT2 Q2 -->
+  <div class="section-container" id="CT2-q2">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 2</span>
+          <span class="q-body">Solve the following system of equations using Cramer's Rule:<br>2x + y − z = 3, &nbsp; x − y + 2z = 2, &nbsp; 3x + 2y − z = 5</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>Cramer's Rule: $x = D_x/D, \ y = D_y/D, \ z = D_z/D$, where $D$ is the determinant of the coefficient matrix.</p>
+
+          <div class="step">
+            <div class="step-title">Coefficient Determinant D</div>
+            $$D = \begin{vmatrix} 2 & 1 & -1 \\ 1 & -1 & 2 \\ 3 & 2 & -1 \end{vmatrix} = 2[1-4] - 1[-1-6] - 1[2+3] = -6+7-5 = -4$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Replace Column 1 with b → D_x</div>
+            $$D_x = \begin{vmatrix} 3 & 1 & -1 \\ 2 & -1 & 2 \\ 5 & 2 & -1 \end{vmatrix} = 3[1-4]-1[-2-10]-1[4+5] = -9+12-9 = -6$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Replace Column 2 with b → D_y</div>
+            $$D_y = \begin{vmatrix} 2 & 3 & -1 \\ 1 & 2 & 2 \\ 3 & 5 & -1 \end{vmatrix} = 2[-2-10]-3[-1-6]-1[5-6] = -24+21+1 = -2$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Replace Column 3 with b → D_z</div>
+            $$D_z = \begin{vmatrix} 2 & 1 & 3 \\ 1 & -1 & 2 \\ 3 & 2 & 5 \end{vmatrix} = 2[-5-4]-1[5-6]+3[2+3] = -18+1+15 = -2$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Compute x, y, z</div>
+            $x = \dfrac{D_x}{D} = \dfrac{-6}{-4} = 1.5$ &nbsp;&nbsp; $y = \dfrac{D_y}{D} = \dfrac{-2}{-4} = 0.5$ &nbsp;&nbsp; $z = \dfrac{D_z}{D} = \dfrac{-2}{-4} = 0.5$
+          </div>
+
+          <div class="result">∴ x = 1.5, &nbsp; y = 0.5, &nbsp; z = 0.5</div>
+          <div class="note"><strong>Verification:</strong> $2(1.5)+0.5-0.5=3$ ✓, &nbsp; $1.5-0.5+2(0.5)=2$ ✓, &nbsp; $3(1.5)+2(0.5)-0.5=5$ ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CT2 Q3 -->
+  <div class="section-container" id="CT2-q3">
+    <div class="card">
+      <div class="qblock">
+        <div class="q-strip">
+          <span class="q-tag">Question 3</span>
+          <span class="q-body">Find y(0.2), correct to four decimal places, using the Taylor's series method, up to 3 terms, given dy/dx = x² + y, y(0) = 1.</span>
+        </div>
+        <div class="ans-tag">Answer</div>
+        <div class="ans-body">
+          <p>The Taylor series expansion about $x_0 = 0$ is:</p>
+          <div class="fbox">
+            $$y(x) = y_0 + x\,y_0' + \dfrac{x^2}{2!}y_0'' + \dfrac{x^3}{3!}y_0''' + \cdots$$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Compute Successive Derivatives at x = 0</div>
+            $y' = x^2 + y$ &nbsp;→&nbsp; $y_0' = 0 + 1 = 1$<br>
+            $y'' = 2x + y'$ &nbsp;→&nbsp; $y_0'' = 0 + 1 = 1$<br>
+            $y''' = 2 + y''$ &nbsp;→&nbsp; $y_0''' = 2 + 1 = 3$
+          </div>
+
+          <div class="step">
+            <div class="step-title">Substitute x = 0.2 (using 3 terms beyond y₀)</div>
+            $y(0.2) = 1 + (0.2)(1) + \dfrac{(0.2)^2}{2}(1) + \dfrac{(0.2)^3}{6}(3)$<br><br>
+            $= 1 + 0.2 + 0.02 + 0.004$
+          </div>
+
+          <div class="result">∴ y(0.2) ≈ 1.2240</div>
+          <div class="note"><strong>Exact solution:</strong> $y = 3e^x - x^2 - 2x - 2$. At $x=0.2$: $y = 3(1.22140)-0.04-0.4-2 = 1.22421$. The 3-term Taylor estimate is accurate to within 0.0002 ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+  let currentYear = 'CT1';
+
+  function switchYear(year) {
+    if (year === currentYear) return;
+    document.getElementById('panel-' + currentYear).classList.remove('active');
+    document.getElementById('panel-' + year).classList.add('active');
+    document.getElementById('btn-' + currentYear).classList.remove('active');
+    document.getElementById('btn-' + year).classList.add('active');
+    document.getElementById('nav-' + currentYear).style.display = 'none';
+    document.getElementById('nav-' + year).style.display = '';
+    currentYear = year;
+    // Reset to Q1
+    const firstLink = document.querySelector('#nav-' + year + ' a');
+    show(year, 'q1', firstLink);
+    window.scrollTo(0, 0);
+  }
+
+  function show(year, id, el) {
+    const panel = document.getElementById('panel-' + year);
+    panel.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('#nav-' + year + ' a').forEach(a => a.classList.remove('active'));
+    const target = document.getElementById(year + '-' + id);
+    if (target) target.classList.add('active');
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+    if (window.MathJax) MathJax.typesetPromise([target]);
+  }
+</script>
+</body>
+</html>
