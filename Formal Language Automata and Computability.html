@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formal Language Automata and Computability - Solutions</title>
+<style>
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --border: #30363d;
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --accent: #f78166;
+  --accent-hover: #ff9a80;
+  --success: #3fb950;
+  --info: #58a6ff;
+  --warning: #d29922;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+.container { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: 320px; background: var(--bg-secondary); border-right: 1px solid var(--border); position: fixed; height: 100vh; overflow-y: auto; padding: 0; display: flex; flex-direction: column; z-index: 100; }
+.sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); background: var(--bg-tertiary); }
+.sidebar-header h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 4px; font-weight: 600; }
+.sidebar-header p { font-size: 0.8rem; color: var(--text-secondary); }
+.sidebar-nav { list-style: none; padding: 10px 0; flex: 1; }
+.sidebar-nav li { margin: 0; }
+.nav-set-header { 
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; color: var(--text-primary); font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; user-select: none; border-left: 3px solid transparent;
+  transition: all 0.2s; background: var(--bg-secondary);
+}
+.nav-set-header:hover { background: var(--bg-tertiary); color: var(--accent); border-left-color: var(--accent); }
+.nav-set-header .set-num { background: var(--accent); color: var(--bg-primary); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; margin-right: 8px; }
+.nav-set-header .toggle-arrow { font-size: 0.8rem; color: var(--text-secondary); transition: transform 0.3s; margin-left: auto; }
+.nav-set-header.collapsed .toggle-arrow { transform: rotate(-90deg); }
+.nav-questions { list-style: none; overflow: hidden; max-height: 800px; transition: max-height 0.3s ease; }
+.nav-questions.collapsed { max-height: 0; }
+.nav-questions li { margin: 0; }
+.nav-questions a { 
+  display: block; padding: 8px 16px 8px 44px; color: var(--text-secondary); 
+  text-decoration: none; font-size: 0.82rem; border-left: 3px solid transparent;
+  transition: all 0.2s; cursor: pointer;
+}
+.nav-questions a:hover { color: var(--accent); background: var(--bg-tertiary); border-left-color: var(--accent); }
+.nav-questions a.active { color: var(--accent); background: var(--bg-tertiary); border-left-color: var(--accent); }
+.nav-questions a::before { content: "› "; color: var(--accent); opacity: 0.6; }
+.nav-set-header.active { background: var(--bg-tertiary); color: var(--accent); border-left-color: var(--accent); }
+
+/* Main Content */
+.main-content { margin-left: 320px; flex: 1; padding: 30px 50px; max-width: calc(100% - 320px); min-height: 100vh; }
+.exam-header { text-align: center; padding: 30px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; }
+.exam-header h1 { color: var(--text-primary); font-size: 1.8rem; margin-bottom: 10px; font-weight: 700; }
+.exam-header .subtitle { color: var(--text-secondary); font-size: 1rem; }
+.exam-header .meta { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; }
+.exam-header .meta span { background: var(--bg-tertiary); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--border); }
+
+.set-title-main { 
+  font-size: 1.4rem; color: var(--accent); padding: 15px 20px; 
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.set-title-main .set-num { background: var(--accent); color: var(--bg-primary); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
+
+.question-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+.question-header { 
+  background: var(--bg-tertiary); padding: 16px 20px; border-left: 4px solid var(--accent);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.question-header h3 { font-size: 1.05rem; color: var(--text-primary); flex: 1; font-weight: 500; }
+
+.solution { padding: 25px 30px; }
+.solution h4 { color: var(--accent); margin: 20px 0 10px; font-size: 1rem; font-weight: 600; }
+.solution h4:first-child { margin-top: 0; }
+.solution p { margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+.solution ul, .solution ol { margin: 12px 0 15px 25px; }
+.solution li { margin-bottom: 8px; color: var(--text-primary); }
+
+.code-block { 
+  background: #0d1117; color: #e6edf3; padding: 16px 20px; border-radius: 8px; 
+  font-family: 'Consolas', 'Monaco', monospace; font-size: 0.88rem; 
+  overflow-x: auto; margin: 15px 0; line-height: 1.6; border: 1px solid var(--border);
+}
+
+.table-container { overflow-x: auto; margin: 15px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: center; }
+th { background: var(--bg-tertiary); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+tr:hover { background: rgba(255,255,255,0.04); }
+
+.highlight-box { 
+  background: rgba(211, 153, 34, 0.1); border-left: 4px solid var(--warning); 
+  padding: 15px 20px; margin: 15px 0; border-radius: 0 8px 8px 0; color: var(--text-primary);
+}
+.answer-box { 
+  background: rgba(63, 185, 80, 0.1); border-left: 4px solid var(--success); 
+  padding: 15px 20px; margin: 15px 0; border-radius: 0 8px 8px 0; 
+  font-weight: 600; color: var(--success);
+}
+.step-box { 
+  background: rgba(88, 166, 255, 0.08); border-left: 4px solid var(--info); 
+  padding: 14px 20px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-primary);
+}
+.graph-visual { 
+  background: var(--bg-tertiary); padding: 20px; border-radius: 8px; 
+  text-align: left; font-family: 'Consolas', monospace; margin: 15px 0; border: 1px solid var(--border);
+  color: var(--success); overflow-x: auto; font-size: 0.95rem; line-height: 1.4; white-space: pre;
+}
+
+.back-to-top { 
+  position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: var(--bg-primary); 
+  width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; 
+  justify-content: center; font-size: 1.2rem; border: none; cursor: pointer; z-index: 99;
+  transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 15px rgba(247, 129, 102, 0.3);
+}
+.back-to-top:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(247, 129, 102, 0.4); }
+
+footer { text-align: center; padding: 40px; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 40px; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+@media (max-width: 768px) { 
+  .sidebar { width: 100%; position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--border); } 
+  .main-content { margin-left: 0; max-width: 100%; padding: 20px; } 
+  .container { flex-direction: column; } 
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+<div class="container">
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h2>📚 Automata Theory</h2>
+    <p>Comprehensive Solutions</p>
+  </div>
+  <ul class="sidebar-nav">
+    <li>
+      <div class="nav-set-header" onclick="toggleSidebarSet(1)" id="nav-set-1">
+        <span style="display:flex;align-items:center"><span class="set-num">1</span>FA & Regular Langs</span>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <ul class="nav-questions collapsed" id="nav-q-1">
+        <li><a onclick="loadSet(1, 'q1')">1. FA Fundamentals</a></li>
+        <li><a onclick="loadSet(1, 'q2')">2. DFA vs NFA</a></li>
+        <li><a onclick="loadSet(1, 'q3')">3. NDFA to DFA Conversion</a></li>
+        <li><a onclick="loadSet(1, 'q4')">4. RE to DFA Construction</a></li>
+        <li><a onclick="loadSet(1, 'q5')">5. Concatenation Property</a></li>
+        <li><a onclick="loadSet(1, 'q6')">6. Pumping Lemma</a></li>
+      </ul>
+    </li>
+    <li>
+      <div class="nav-set-header" onclick="toggleSidebarSet(2)" id="nav-set-2">
+        <span style="display:flex;align-items:center"><span class="set-num">2</span>Context-Free Grammar</span>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <ul class="nav-questions collapsed" id="nav-q-2">
+        <li><a onclick="loadSet(2, 'q7')">7. Define Grammar</a></li>
+        <li><a onclick="loadSet(2, 'q8')">8. String Derivation</a></li>
+        <li><a onclick="loadSet(2, 'q9')">9. LMD, RMD & Parse Tree</a></li>
+        <li><a onclick="loadSet(2, 'q10')">10. Chomsky Normal Form</a></li>
+        <li><a onclick="loadSet(2, 'q11')">11. CYK Algorithm</a></li>
+        <li><a onclick="loadSet(2, 'q12')">12. Palindrome Grammar</a></li>
+      </ul>
+    </li>
+    <li>
+      <div class="nav-set-header" onclick="toggleSidebarSet(3)" id="nav-set-3">
+        <span style="display:flex;align-items:center"><span class="set-num">3</span>Pushdown Automata (PDA)</span>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <ul class="nav-questions collapsed" id="nav-q-3">
+        <li><a onclick="loadSet(3, 'q13')">13. CFG to PDA</a></li>
+        <li><a onclick="loadSet(3, 'q14')">14. PDA for Palindromes</a></li>
+      </ul>
+    </li>
+    <li>
+      <div class="nav-set-header" onclick="toggleSidebarSet(4)" id="nav-set-4">
+        <span style="display:flex;align-items:center"><span class="set-num">4</span>Advanced Machines</a>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <ul class="nav-questions collapsed" id="nav-q-4">
+        <li><a onclick="loadSet(4, 'q15')">15. Mealy to Moore</a></li>
+        <li><a onclick="loadSet(4, 'q16')">16. TM: a^n b^n c^n</a></li>
+        <li><a onclick="loadSet(4, 'q17')">17. TM: Leading Zeros</a></li>
+        <li><a onclick="loadSet(4, 'q18')">18. TM: Odd number of 1's</a></li>
+      </ul>
+    </li>
+    <li>
+      <div class="nav-set-header" onclick="toggleSidebarSet(5)" id="nav-set-5">
+        <span style="display:flex;align-items:center"><span class="set-num">5</span>Complexity Theory</span>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <ul class="nav-questions collapsed" id="nav-q-5">
+        <li><a onclick="loadSet(5, 'q19')">19. Decidability</a></li>
+        <li><a onclick="loadSet(5, 'q20')">20. Complexity Classes</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content">
+  <div class="exam-header">
+    <h1>Formal Language Automata and Computability</h1>
+    <p class="subtitle">Complete Question Bank Solutions</p>
+    <div class="meta">
+      <span>📝 Comprehensive Guide</span>
+      <span>📋 Based on provided PDF Guidelines</span>
+    </div>
+  </div>
+  <div id="content-area"></div>
+  <footer>
+    <p>Formal Language Automata and Computability Solutions | Generated perfectly</p>
+  </footer>
+</main>
+</div>
+<button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const questionData = {
+  "1": { title: "Finite Automata and Regular Languages", questions: {
+    q1: { title: "1. Define Automata and Finite Automaton (FA)" },
+    q2: { title: "2. Compare DFA and NFA" },
+    q3: { title: "3. NDFA to DFA Conversion" },
+    q4: { title: "4. Construct DFA for Regular Expressions" },
+    q5: { title: "5. Concatenation of Regular Languages" },
+    q6: { title: "6. Pumping Lemma for non-regularity" }
+  }},
+  "2": { title: "Context-Free Grammar (CFG)", questions: {
+    q7: { title: "7. Define Grammar" },
+    q8: { title: "8. String Derivation from CFG" },
+    q9: { title: "9. LMD, RMD & Derivation Tree" },
+    q10: { title: "10. Chomsky Normal Form (CNF)" },
+    q11: { title: "11. CYK Algorithm" },
+    q12: { title: "12. Palindrome Grammar Proof" }
+  }},
+  "3": { title: "Pushdown Automata (PDA)", questions: {
+    q13: { title: "13. Derive PDA from CFG" },
+    q14: { title: "14. Construct PDA for ww^R" }
+  }},
+  "4": { title: "Mealy, Moore and Turing Machines", questions: {
+    q15: { title: "15. Mealy to Moore Machine Conversion" },
+    q16: { title: "16. Turing Machine for a^n b^n c^n" },
+    q17: { title: "17. TM to remove leading zeros" },
+    q18: { title: "18. TM for odd number of 1's" }
+  }},
+  "5": { title: "Decidability and Complexity Theory", questions: {
+    q19: { title: "19. Decidability of Prime Length Strings" },
+    q20: { title: "20. Complexity Classes Discussion" }
+  }}
+};
+
+const contentData = {
+  q1: `<h4>Define Automata</h4>
+<p>An <strong>Automaton</strong> (plural: Automata) is an abstract mathematical model of a computing machine. It consists of discrete inputs and outputs, and transitions through a series of internal states based on the input string to perform computations, recognize patterns, or accept languages.</p>
+<h4>Finite Automaton (FA)</h4>
+<p>A Finite Automaton is the simplest form of automata, consisting of a finite number of states. It has strictly finite memory and operates without any auxiliary storage (like a stack or tape). It is mathematically defined as a 5-tuple: <strong>(Q, Σ, δ, q0, F)</strong> where Q is finite states, Σ is input alphabet, δ is the transition function, q0 is the start state, and F is a set of final states.</p>
+<h4>Why is FA a self-operating model?</h4>
+<div class="answer-box">
+FA is called a <strong>self-operating computing model</strong> because once it begins reading an input string, the transition from one state to the next happens automatically based solely on predefined rules (the transition function δ). It requires no external human intervention, manual logic switching, or external memory manipulation during the process.
+</div>`,
+
+  q2: `<h4>Comparison Between DFA and NFA</h4>
+<div class="table-container">
+<table>
+<tr><th>Feature</th><th>Deterministic Finite Automaton (DFA)</th><th>Non-Deterministic Finite Automaton (NFA)</th></tr>
+<tr><td><strong>Transitions</strong></td><td>For every state and input symbol, there is exactly ONE next state.</td><td>For a given state and input symbol, there can be ZERO, ONE, or MULTIPLE next states.</td></tr>
+<tr><td><strong>Epsilon (ε) Moves</strong></td><td>Cannot use empty string (ε) transitions.</td><td>Can use ε-transitions to change states without reading input.</td></tr>
+<tr><td><strong>Complexity/Design</strong></td><td>Harder to design for complex languages.</td><td>Easier to design due to non-deterministic guessing.</td></tr>
+<tr><td><strong>Execution Time</strong></td><td>Faster string matching (O(N) where N is string length).</td><td>Slower, as it conceptually traces multiple paths simultaneously.</td></tr>
+<tr><td><strong>Space Requirements</strong></td><td>Requires more states generally compared to an equivalent NFA.</td><td>Requires fewer states conceptually.</td></tr>
+<tr><td><strong>Dead States</strong></td><td>Often requires a dedicated 'Dead' or 'Trap' state to handle invalid inputs.</td><td>No dead state required; paths that fail simply terminate (die).</td></tr>
+</table>
+</div>
+<p><em>Key Highlight:</em> Every NFA can be converted into an equivalent DFA, meaning they both have exactly the same computational power (they both accept Regular Languages).</p>`,
+
+  q3: `<h4>NDFA to DFA Conversion Strategy</h4>
+<div class="highlight-box"><strong>Note:</strong> The specific NDFA diagram was not provided in the question source. Below is the universally applicable standard algorithm (Subset Construction Method) to convert ANY given NDFA to a DFA.</div>
+<div class="step-box">
+<strong>Subset Construction Algorithm:</strong><br>
+1. <strong>Start State:</strong> The start state of the new DFA is the ε-closure of the start state of the NFA (if no ε-moves, it is simply {q0}).<br>
+2. <strong>Transition Computation:</strong> For each newly created DFA state (which is a set of NFA states), and for each input symbol in Σ, find all possible next NFA states.<br>
+   <code>δ_DFA( {q1, q2}, 'a' ) = δ_NFA(q1, 'a') ∪ δ_NFA(q2, 'a')</code><br>
+3. <strong>New States:</strong> If the resulting set of states is not already a state in the DFA, add it as a new DFA state.<br>
+4. <strong>Final States:</strong> Any DFA state (set of NFA states) that contains at least one final state of the original NFA becomes a final state in the DFA.<br>
+5. <strong>Repeat:</strong> Continue step 2 and 3 until no new states are generated.
+</div>`,
+
+  q4: `<h4>(i) RE = ab + a</h4>
+<p>Accepts exactly the strings "ab" or "a".</p>
+<div class="table-container">
+<table>
+<tr><th>State</th><th>Input 'a'</th><th>Input 'b'</th></tr>
+<tr><td><strong>-> q0</strong></td><td>q1</td><td>Dead</td></tr>
+<tr><td><strong>* q1</strong></td><td>Dead</td><td>q2</td></tr>
+<tr><td><strong>* q2</strong></td><td>Dead</td><td>Dead</td></tr>
+<tr><td>Dead</td><td>Dead</td><td>Dead</td></tr>
+</table>
+</div>
+<div class="graph-visual">
+    (q0) --a--> ((q1)) --b--> ((q2))
+      |           |           |
+      b           a          a,b
+      V           V           V
+    (Dead) <------+-----------+
+</div>
+
+<h4>(ii) RE = (1)*01</h4>
+<p>Accepts any number of 1s, followed by exactly "01".</p>
+<div class="table-container">
+<table>
+<tr><th>State</th><th>Input '0'</th><th>Input '1'</th></tr>
+<tr><td><strong>-> q0</strong></td><td>q1</td><td>q0</td></tr>
+<tr><td><strong>q1</strong></td><td>Dead</td><td>q2</td></tr>
+<tr><td><strong>* q2</strong></td><td>Dead</td><td>Dead</td></tr>
+<tr><td>Dead</td><td>Dead</td><td>Dead</td></tr>
+</table>
+</div>
+<div class="graph-visual">
+    +--1--+
+    |     |
+    V     |
+  (q0) ---+---0---> (q1) ---1---> ((q2))
+   |                 |              |
+   0                 0             0,1
+   V                 V              V
+ (Dead) <------------+--------------+
+</div>
+
+<h4>(iii) RE = (b)*ab (Assumed from "b ab")</h4>
+<p>Accepts zero or more 'b's, followed by "ab".</p>
+<div class="table-container">
+<table>
+<tr><th>State</th><th>Input 'a'</th><th>Input 'b'</th></tr>
+<tr><td><strong>-> q0</strong></td><td>q1</td><td>q0</td></tr>
+<tr><td><strong>q1</strong></td><td>Dead</td><td>q2</td></tr>
+<tr><td><strong>* q2</strong></td><td>Dead</td><td>Dead</td></tr>
+<tr><td>Dead</td><td>Dead</td><td>Dead</td></tr>
+</table>
+</div>`,
+
+  q5: `<h4>Proof: Concatenation of Regular Languages is Regular</h4>
+<div class="step-box">
+<strong>Let L1 and L2 be two regular languages.</strong><br>
+Since they are regular, there exist Finite Automata M1 and M2 that accept L1 and L2 respectively.<br>
+Let M1 = (Q1, Σ, δ1, q1, F1) and M2 = (Q2, Σ, δ2, q2, F2).<br><br>
+<strong>Construction of new Automaton M for L1·L2:</strong><br>
+We construct an NFA with ε-transitions (ε-NFA) to accept the concatenated language.<br>
+1. <strong>States:</strong> Q = Q1 ∪ Q2<br>
+2. <strong>Start State:</strong> The start state of M is q1 (start state of M1).<br>
+3. <strong>Final States:</strong> The final states of M are F2 (final states of M2).<br>
+4. <strong>Transitions:</strong><br>
+   - Retain all transitions within M1 and M2.<br>
+   - Add an ε-transition (empty string) from <em>every</em> final state in F1 to the start state q2 of M2.<br>
+   - The final states of M1 (F1) are <strong>no longer final</strong> in the new machine M.<br><br>
+<strong>Conclusion:</strong><br>
+Since we have successfully constructed an ε-NFA for L1·L2, and every ε-NFA can be converted to an equivalent DFA, the concatenated language L1·L2 must be regular.
+</div>`,
+
+  q6: `<h4>Pumping Lemma Proof</h4>
+<div class="highlight-box"><strong>Note:</strong> The specific language was missing from the PDF. We will prove that the classic language <strong>L = { a^n b^n | n ≥ 0 }</strong> is not regular as a perfect example.</div>
+<div class="step-box">
+<strong>Assumption:</strong> Assume L is regular. Then it must satisfy the Pumping Lemma.<br>
+Let 'p' be the pumping length provided by the lemma.<br><br>
+<strong>Step 1 (Select a string):</strong> Choose a string <em>w</em> in L such that |w| ≥ p. Let w = a^p b^p.<br><br>
+<strong>Step 2 (Partition):</strong> The lemma states w can be divided into three parts, w = xyz, satisfying:<br>
+1. |xy| ≤ p<br>
+2. |y| > 0<br>
+3. For all i ≥ 0, xy^iz ∈ L<br><br>
+<strong>Step 3 (Analyze):</strong> Since |xy| ≤ p, both x and y must consist entirely of 'a's (because the first p characters of w are all 'a's).<br>
+Let y = a^k, where k > 0 (since |y| > 0).<br><br>
+<strong>Step 4 (Pump):</strong> Let's pump y by choosing i = 2. The new string is xy²z.<br>
+The number of 'a's becomes p + k.<br>
+The number of 'b's remains p.<br>
+The string is now a^(p+k) b^p.<br><br>
+<strong>Contradiction:</strong> Since k > 0, the number of 'a's is no longer equal to the number of 'b's. Therefore, xy²z ∉ L. This violates condition 3 of the Pumping Lemma.<br><br>
+<strong>Conclusion:</strong> Our assumption was false. Thus, L is not regular.
+</div>`,
+
+  q7: `<h4>Definition of Grammar</h4>
+<p>A <strong>Grammar</strong> in formal language theory is a set of production rules used to generate strings in a language. It describes the syntactic structure of the language. Mathematically, a grammar is defined as a 4-tuple <strong>G = (V, Σ, R, S)</strong> where:</p>
+<ul>
+<li><strong>V:</strong> A finite set of Non-terminal symbols (variables that can be replaced).</li>
+<li><strong>Σ (Sigma):</strong> A finite set of Terminal symbols (the actual characters of the string). V and Σ are disjoint.</li>
+<li><strong>R (or P):</strong> A finite set of Production Rules mapping non-terminals to strings of non-terminals/terminals.</li>
+<li><strong>S:</strong> The Start variable (S ∈ V), used to begin the derivation.</li>
+</ul>`,
+
+  q8: `<h4>String Derivation</h4>
+<p>Given CFG: G = (S, {A}, {a, b}, S, P) <br>
+P = { S → aAb, A → aAb | ε }<br>
+<em>(Note: Assuming standard context-free form correcting the aA → aaAb OCR anomaly)</em></p>
+<p><strong>Deriving Five Accepted Strings:</strong></p>
+<div class="step-box">
+1. <strong>n = 0:</strong> S ⇒ aAb ⇒ a(ε)b ⇒ <strong>ab</strong><br>
+2. <strong>n = 1:</strong> S ⇒ aAb ⇒ a(aAb)b ⇒ aa(ε)bb ⇒ <strong>aabb</strong><br>
+3. <strong>n = 2:</strong> S ⇒ aAb ⇒ a(aAb)b ⇒ aa(aAb)bb ⇒ aaa(ε)bbb ⇒ <strong>aaabbb</strong><br>
+4. <strong>n = 3:</strong> S ⇒ aAb ⇒ a(aAb)b ⇒ aa(aAb)bb ⇒ aaa(aAb)bbb ⇒ aaaa(ε)bbbb ⇒ <strong>aaaabbbb</strong><br>
+5. <strong>n = 4:</strong> S ⇒ aAb ⇒ ... ⇒ aaaaa(ε)bbbbb ⇒ <strong>aaaaabbbbb</strong>
+</div>
+<div class="answer-box">The strings accepted form the language L = { a^n b^n | n ≥ 1 } (based on this specific production).</div>`,
+
+  q9: `<h4>LMD, RMD and Derivation Tree</h4>
+<p>CFG: X → X+X | X*X | (X) | a. String: <strong>a+a*a</strong></p>
+
+<h4>Leftmost Derivation (LMD)</h4>
+<p>Always replace the leftmost non-terminal (X).</p>
+<div class="step-box">
+X ⇒ <strong>X</strong> + X<br>
+  ⇒ a + <strong>X</strong><br>
+  ⇒ a + <strong>X</strong> * X<br>
+  ⇒ a + a * <strong>X</strong><br>
+  ⇒ a + a * a
+</div>
+
+<h4>Rightmost Derivation (RMD)</h4>
+<p>Always replace the rightmost non-terminal (X).</p>
+<div class="step-box">
+X ⇒ X + <strong>X</strong><br>
+  ⇒ X + X * <strong>X</strong><br>
+  ⇒ X + <strong>X</strong> * a<br>
+  ⇒ <strong>X</strong> + a * a<br>
+  ⇒ a + a * a
+</div>
+
+<h4>Derivation Tree (Parse Tree)</h4>
+<div class="graph-visual">
+       X
+     / | \
+    X  +  X
+    |    /|\
+    a   X * X
+        |   |
+        a   a
+</div>`,
+
+  q10: `<h4>Convert CFG to Chomsky Normal Form (CNF)</h4>
+<div class="highlight-box"><strong>Note:</strong> The specific CFG to convert was missing in the PDF. Here is the universally applicable algorithm to convert any CFG to CNF.</div>
+<p>In CNF, all productions must be exactly of the form: <strong>A → BC</strong> (two non-terminals) or <strong>A → a</strong> (one terminal).</p>
+<div class="step-box">
+<strong>Step 1: Eliminate Start Symbol from RHS</strong><br>
+Create a new start state S0 → S.<br><br>
+<strong>Step 2: Eliminate Null/Epsilon (ε) Productions</strong><br>
+If A → ε exists, find all rules containing A on the RHS and replace A with ε to generate new rules. Remove A → ε.<br><br>
+<strong>Step 3: Eliminate Unit Productions</strong><br>
+If A → B exists, replace it with all productions of B. Remove A → B.<br><br>
+<strong>Step 4: Eliminate Useless Symbols</strong><br>
+Remove non-terminals that cannot reach a terminal string, and non-terminals that cannot be reached from the Start state.<br><br>
+<strong>Step 5: Restructure to CNF (A → BC or A → a)</strong><br>
+- For mixed rules like A → aB, create a new variable X → a, and change to A → XB.<br>
+- For long rules like A → BCD, create a new variable Y → CD, and change to A → BY.
+</div>`,
+
+  q11: `<h4>CYK Algorithm Evaluation</h4>
+<p>Grammar: S → AB|BC, A → BA|a, B → CC|b, C → AB|a. <br>
+String: <strong>w = baaba</strong> (Length n = 5)</p>
+<div class="table-container">
+<table>
+<tr>
+  <th>j \ i</th>
+  <th>1 (b)</th>
+  <th>2 (a)</th>
+  <th>3 (a)</th>
+  <th>4 (b)</th>
+  <th>5 (a)</th>
+</tr>
+<tr>
+  <td><strong>1 (L=1)</strong></td>
+  <td>{B}</td>
+  <td>{A, C}</td>
+  <td>{A, C}</td>
+  <td>{B}</td>
+  <td>{A, C}</td>
+</tr>
+<tr>
+  <td><strong>2 (L=2)</strong></td>
+  <td>{A, S}</td>
+  <td>{B}</td>
+  <td>{S, C}</td>
+  <td>{A, S}</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td><strong>3 (L=3)</strong></td>
+  <td>∅</td>
+  <td>{B}</td>
+  <td>{B}</td>
+  <td>-</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td><strong>4 (L=4)</strong></td>
+  <td>∅</td>
+  <td>{S, A, C}</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td><strong>5 (L=5)</strong></td>
+  <td>{S, A, C}</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+</tr>
+</table>
+</div>
+<div class="answer-box">
+Since the Start symbol <strong>S</strong> is present in the top-left cell X_{1,5} (which represents the derivation of the entire string 'baaba'), <strong>YES</strong>, the string "baaba" belongs to L(G).
+</div>`,
+
+  q12: `<h4>Proof: Grammar generates all Palindromes</h4>
+<p>Grammar: <strong>S → 0S0 | 1S1 | 0 | 1 | ε</strong> over alphabet {0,1}.</p>
+<div class="step-box">
+<strong>Proof by Induction on string length |w|:</strong><br><br>
+<strong>Base Case (|w| = 0 and 1):</strong><br>
+- If w = ε (|w|=0), S → ε generates it.<br>
+- If w = 0 (|w|=1), S → 0 generates it.<br>
+- If w = 1 (|w|=1), S → 1 generates it.<br>
+Thus, all palindromes of length 0 and 1 are generated.<br><br>
+<strong>Inductive Hypothesis:</strong><br>
+Assume the grammar generates all palindromes up to length k.<br><br>
+<strong>Inductive Step (|w| = k + 2):</strong><br>
+Let w be a palindrome of length k+2. By definition of a palindrome, w must start and end with the same character. Thus, w = 0x0 or w = 1x1, where x is a palindrome of length k.<br>
+- By our inductive hypothesis, the CFG can generate x starting from S (i.e., S ⇒* x).<br>
+- If w = 0x0, we use the production S → 0S0. Then S ⇒ 0S0 ⇒* 0x0 = w.<br>
+- If w = 1x1, we use the production S → 1S1. Then S ⇒ 1S1 ⇒* 1x1 = w.<br><br>
+<strong>Conclusion:</strong><br>
+By Mathematical Induction, the grammar generates the set of all palindrome strings over {0,1}.
+</div>`,
+
+  q13: `<h4>CFG to PDA Conversion</h4>
+<p>CFG: S → XS | ε, A → aXb | Ab | ab</p>
+<div class="step-box">
+To convert a CFG to a Pushdown Automaton (PDA) with a single state 'q', we use two types of transitions:<br>
+1. <strong>Expansion Rules:</strong> For every production A → γ, push γ onto the stack. <br>
+   <code>δ(q, ε, A) = (q, γ)</code><br>
+2. <strong>Matching Rules:</strong> For every terminal symbol 'a' in Σ, pop 'a' when it matches the input. <br>
+   <code>δ(q, a, a) = (q, ε)</code><br><br>
+<strong>Derived PDA Transitions for given CFG:</strong><br>
+- δ(q, ε, S) = { (q, XS), (q, ε) }<br>
+- δ(q, ε, A) = { (q, aXb), (q, Ab), (q, ab) }<br>
+- δ(q, ε, X) = ... (Note: The productions for X are missing in the provided CFG fragment. If X is terminal, we match it. If non-terminal, we need its rules.)<br>
+- δ(q, a, a) = { (q, ε) }<br>
+- δ(q, b, b) = { (q, ε) }
+</div>`,
+
+  q14: `<h4>PDA Design for L = {ww^R | w ∈ {a,b}*}</h4>
+<p>This is the language of even-length palindromes. The PDA uses non-determinism to "guess" the middle of the string.</p>
+<div class="step-box">
+<strong>States:</strong> q0 (Pushing), q1 (Matching), qf (Accept)<br>
+<strong>Stack Alphabet:</strong> {a, b, Z0} (Z0 is initial stack symbol)<br><br>
+<strong>Transitions:</strong><br>
+1. <strong>Push Phase (Read w):</strong> Read input, push exactly what is read.<br>
+   δ(q0, a, Z0) = (q0, aZ0)<br>
+   δ(q0, b, Z0) = (q0, bZ0)<br>
+   δ(q0, a, a) = (q0, aa)<br>
+   δ(q0, b, b) = (q0, bb)<br>
+   δ(q0, a, b) = (q0, ab)<br>
+   δ(q0, b, a) = (q0, ba)<br><br>
+2. <strong>Non-Deterministic Middle Guess:</strong> Spontaneously transition to state q1 without reading input.<br>
+   δ(q0, ε, a) = (q1, a)<br>
+   δ(q0, ε, b) = (q1, b)<br>
+   δ(q0, ε, Z0) = (q1, Z0)<br><br>
+3. <strong>Pop/Match Phase (Read w^R):</strong> Ensure input character matches top of stack, then pop.<br>
+   δ(q1, a, a) = (q1, ε)<br>
+   δ(q1, b, b) = (q1, ε)<br><br>
+4. <strong>Acceptance:</strong> If input is empty and stack has only Z0 left.<br>
+   δ(q1, ε, Z0) = (qf, Z0)
+</div>`,
+
+  q15: `<h4>Conversion Algorithm: Mealy to Moore Machine</h4>
+<div class="highlight-box"><strong>Note:</strong> The machine diagram was not provided. Below is the universally accepted algorithmic process for converting any Mealy Machine to a Moore Machine.</div>
+<div class="step-box">
+<strong>Algorithm Steps:</strong><br>
+1. <strong>Examine Outputs:</strong> Look at the incoming transitions to each state in the Mealy machine. A state 'q' might have incoming transitions that produce different outputs (e.g., producing output 0 on one path, and 1 on another).<br>
+2. <strong>Split States:</strong> If a state 'q' has multiple different outputs entering it, split 'q' into multiple states corresponding to those outputs (e.g., q_0 and q_1).<br>
+3. <strong>Reassign Transitions:</strong> <br>
+   - All incoming edges to the original 'q' that output '0' will now point to q_0.<br>
+   - All incoming edges to the original 'q' that output '1' will now point to q_1.<br>
+   - The outgoing edges from q_0 and q_1 remain exactly the same as the original outgoing edges from 'q'.<br>
+4. <strong>Assign State Outputs:</strong> In the new Moore machine, assign the output to the state itself based on how it was split (q_0 outputs 0, q_1 outputs 1).<br>
+5. <strong>Initial State Check:</strong> If the initial state 'q0' needs to be split, create a new start state that transitions on ε, or define the initial output specifically (often empty or a default value).
+</div>`,
+
+  q16: `<h4>Turing Machine for L = {a^n b^n c^n | n ≥ 1}</h4>
+<p><strong>Logic:</strong> We will cross out one 'a' (replace with X), move right to cross one 'b' (replace with Y), move right to cross one 'c' (replace with Z), and then return back to the leftmost 'a' to repeat.</p>
+<div class="step-box">
+<strong>State Transitions (High-level):</strong><br>
+<strong>q0:</strong> Read 'a' → Write 'X', Move Right, go to q1.<br>
+    <em>(If it reads 'Y', all 'a's are done. Move Right to q4 to verify only Ys and Zs remain.)</em><br><br>
+<strong>q1:</strong> Read 'a' or 'Y' → Move Right (ignore).<br>
+    Read 'b' → Write 'Y', Move Right, go to q2.<br><br>
+<strong>q2:</strong> Read 'b' or 'Z' → Move Right (ignore).<br>
+    Read 'c' → Write 'Z', Move Left, go to q3.<br><br>
+<strong>q3 (Rewind):</strong> Read 'a', 'b', 'Y', 'Z' → Move Left (ignore).<br>
+    Read 'X' → Move Right, go to q0 (Restart cycle).<br><br>
+<strong>q4 (Verify):</strong> Read 'Y' or 'Z' → Move Right.<br>
+    Read Blank (Δ) → Move Right, go to <strong>q_accept</strong>.
+</div>`,
+
+  q17: `<h4>Turing Machine to Remove Leading Zeros</h4>
+<p>If string is purely zeros, leave a single zero. Works on binary strings.</p>
+<div class="step-box">
+<strong>States Logic:</strong><br>
+<strong>q0 (Start):</strong><br>
+- Read '0' → Write Blank (B), Move Right, go to q1 (Skipping leading zeros).<br>
+- Read '1' → Leave '1', Move Right, go to q_keep (No leading zero).<br>
+- Read B → Halt.<br><br>
+<strong>q1:</strong><br>
+- Read '0' → Write B, Move Right (continue stripping).<br>
+- Read '1' → Leave '1', Move Right, go to q_keep.<br>
+- Read B (End of string) → Move Left, Write '0' (To satisfy "leave a single zero" rule), go to q_halt.<br><br>
+<strong>q_keep:</strong><br>
+- Read '0' or '1' → Leave it, Move Right.<br>
+- Read B → Halt (Accept).
+</div>`,
+
+  q18: `<h4>Turing Machine for Odd Number of 1's</h4>
+<p>Alphabet = {1} (Based on prompt, assuming unary or binary where we only count 1s). We use two states to track Even/Odd.</p>
+<div class="step-box">
+<strong>States:</strong> q_even (Start), q_odd (Final/Accept)<br><br>
+<strong>Transitions:</strong><br>
+1. <strong>δ(q_even, 1) = (q_odd, 1, R)</strong><br>
+   (Reading a '1' changes count from Even to Odd)<br>
+2. <strong>δ(q_odd, 1) = (q_even, 1, R)</strong><br>
+   (Reading another '1' changes count back to Even)<br>
+3. <strong>δ(q_even, B) = Reject</strong><br>
+   (Reached end of string while Even, fail)<br>
+4. <strong>δ(q_odd, B) = Accept</strong><br>
+   (Reached end of string while Odd, succeed!)
+</div>`,
+
+  q19: `<h4>Decidability of L = {1^n | n is prime}</h4>
+<div class="answer-box">
+<strong>Yes, L is Decidable.</strong>
+</div>
+<p><strong>Justification:</strong> A language is decidable if there exists a Turing Machine that will always halt and accept strings in the language, and halt and reject strings not in the language.</p>
+<div class="step-box">
+To decide L = {1^n | n is prime}, we can construct a Turing Machine M that does the following:<br>
+1. Count the number of 1's on the tape. Let this number be 'n'.<br>
+2. If n < 2, M halts and rejects.<br>
+3. For i = 2 to sqrt(n):<br>
+   - If n is evenly divisible by i, M halts and rejects.<br>
+4. If no divisor is found, M halts and accepts.<br><br>
+Since determining if an integer is prime is a computationally finite algorithm (it will never loop infinitely for a given 'n'), the Turing Machine will always halt. Thus, the language is decidable.
+</div>`,
+
+  q20: `<h4>Complexity Classes Discussed</h4>
+<ul>
+<li><strong>P (Polynomial Time):</strong> Problems that can be solved by a Deterministic Turing Machine (DTM) in polynomial time (O(n^k)). <br><em>Example:</em> Sorting algorithms, Shortest path (Dijkstra).</li>
+<li><strong>NP (Non-Deterministic Polynomial Time):</strong> Problems whose solutions can be <em>verified</em> by a DTM in polynomial time, or solved by a Non-Deterministic TM in polynomial time. <br><em>Example:</em> Boolean Satisfiability (SAT), Sudoku validation.</li>
+<li><strong>NP-Complete:</strong> The hardest problems in NP. If one NP-Complete problem can be solved in P, then P = NP. Every problem in NP can be reduced to them in polynomial time. <br><em>Example:</em> 3-SAT, Traveling Salesman Problem (Decision version).</li>
+<li><strong>NP-Hard:</strong> Problems that are at least as hard as the hardest problems in NP. They do not have to be in NP themselves (solutions may not be verifiable in polynomial time). <br><em>Example:</em> Halting Problem (Undecidable, NP-Hard).</li>
+<li><strong>PSPACE:</strong> Problems that can be solved using polynomial space/memory, regardless of time. <br><em>Example:</em> Quantified Boolean Formula (QBF), Chess (generalized).</li>
+<li><strong>EXPTIME (Exponential Time):</strong> Problems solvable in O(2^p(n)) time. Includes all of P, NP, and PSPACE. <br><em>Example:</em> Evaluating a position in generalized Chess.</li>
+</ul>`
+};
+
+let currentSet = null;
+
+function toggleSidebarSet(setNum) {
+    const questions = document.getElementById('nav-q-' + setNum);
+    const header = document.getElementById('nav-set-' + setNum);
+    if (questions.classList.contains('collapsed')) {
+        questions.classList.remove('collapsed');
+        header.classList.remove('collapsed');
+    } else {
+        questions.classList.add('collapsed');
+        header.classList.add('collapsed');
+    }
+}
+
+function loadSet(setNum, qId) {
+    const setData = questionData[setNum];
+    if (!setData) return;
+
+    currentSet = setNum;
+
+    document.querySelectorAll('.nav-set-header').forEach(h => h.classList.remove('active'));
+    document.querySelectorAll('.nav-questions a').forEach(a => a.classList.remove('active'));
+    document.getElementById('nav-set-' + setNum).classList.add('active');
+    if (qId) {
+        document.querySelectorAll('#nav-q-' + setNum + ' a').forEach(a => {
+            if (a.getAttribute('onclick').includes(qId)) a.classList.add('active');
+        });
+    }
+
+    let html = '<div class="set-title-main"><span class="set-num">' + setNum + '</span>' + setData.title + '</div>';
+
+    for (const [qKey, qData] of Object.entries(setData.questions)) {
+        const content = contentData[qKey] || '';
+        html += '<div class="question-card" id="' + qKey + '">';
+        html += '<div class="question-header"><h3>' + qData.title + '</h3></div>';
+        html += '<div class="solution">' + content + '</div>';
+        html += '</div>';
+    }
+
+    document.getElementById('content-area').innerHTML = html;
+
+    if (qId) {
+        setTimeout(() => {
+            const el = document.getElementById(qId);
+            if (el) {
+               const y = el.getBoundingClientRect().top + window.pageYOffset - 20;
+               window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        }, 50);
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.nav-questions').forEach(q => q.classList.add('collapsed'));
+    document.querySelectorAll('.nav-set-header').forEach(h => h.classList.add('collapsed'));
+
+    loadSet(1);
+    document.getElementById('nav-q-1').classList.remove('collapsed');
+    document.getElementById('nav-set-1').classList.remove('collapsed');
+});
+</script>
+</body>
+</html>
